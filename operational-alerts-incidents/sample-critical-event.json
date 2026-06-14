@@ -1,0 +1,10 @@
+{
+  "source": "backend-webhook",
+  "service": "payments-api",
+  "status": "down",
+  "severity": "critical",
+  "metric": "http_status",
+  "value": 500,
+  "threshold": 399,
+  "message": "Payments provider is returning HTTP 500 for checkout creation."
+}

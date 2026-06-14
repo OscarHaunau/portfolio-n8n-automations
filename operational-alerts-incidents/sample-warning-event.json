@@ -1,0 +1,9 @@
+{
+  "source": "scheduler",
+  "service": "crm-sync",
+  "status": "degraded",
+  "metric": "lag_minutes",
+  "value": 45,
+  "threshold": 30,
+  "message": "CRM sync is delayed beyond expected SLA."
+}

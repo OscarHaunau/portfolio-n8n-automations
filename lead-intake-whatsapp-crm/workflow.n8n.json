@@ -1,0 +1,280 @@
+{
+  "name": "Portfolio - Lead Intake + WhatsApp + CRM",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "portfolio/lead-intake",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "28413448-e8b6-41c1-b68d-7e0c0c377f28",
+      "name": "Webhook - Lead Intake",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -900,
+        0
+      ],
+      "notesInFlow": true,
+      "notes": "Receives lead payload. Remember: webhook user data is under $json.body."
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $json.body || {};\nconst errors = [];\nconst required = ['name', 'email', 'phone'];\nfor (const field of required) {\n  if (!body[field] || String(body[field]).trim() === '') errors.push(`Missing ${field}`);\n}\nconst email = String(body.email || '').trim().toLowerCase();\nif (email && !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) errors.push('Invalid email');\nconst rawPhone = String(body.phone || '').replace(/[^0-9+]/g, '');\nif (rawPhone && rawPhone.replace(/\\D/g, '').length < 8) errors.push('Invalid phone');\nconst source = String(body.source || 'unknown').trim().toLowerCase();\nconst interest = String(body.interest || body.message || '').trim();\nlet score = 20;\nif (body.budget) score += 25;\nif (interest.length > 25) score += 20;\nif (['ads','landing','referral','instagram'].includes(source)) score += 15;\nconst priority = score >= 60 ? 'hot' : score >= 40 ? 'warm' : 'cold';\nreturn [{\n  json: {\n    valid: errors.length === 0,\n    errors,\n    lead: {\n      name: String(body.name || '').trim(),\n      email,\n      phone: rawPhone,\n      company: String(body.company || '').trim(),\n      source,\n      interest,\n      budget: body.budget || null,\n      priority,\n      score,\n      status: 'new',\n      created_at: new Date().toISOString(),\n      trace_id: `lead_${Date.now()}_${Math.random().toString(16).slice(2, 8)}`\n    }\n  }\n}];"
+      },
+      "id": "4c47f905-f9b4-4258-9f37-c959bda15bf1",
+      "name": "Validate + Normalize Lead",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -660,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "1193862f-3291-4578-83e1-8d4c07520d08",
+              "leftValue": "={{$json.valid}}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals",
+                "singleValue": false
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "c2083193-bdd1-43b7-8d81-0056557561bc",
+      "name": "IF - Lead Is Valid",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -420,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO portfolio_leads (trace_id, name, email, phone, company, source, interest, budget, priority, score, status, created_at) VALUES ('{{$json.lead.trace_id}}', '{{$json.lead.name}}', '{{$json.lead.email}}', '{{$json.lead.phone}}', '{{$json.lead.company}}', '{{$json.lead.source}}', '{{$json.lead.interest}}', '{{$json.lead.budget}}', '{{$json.lead.priority}}', {{$json.lead.score}}, '{{$json.lead.status}}', '{{$json.lead.created_at}}');",
+        "options": {}
+      },
+      "id": "f543208b-c975-4b61-b0d9-a15b74d8c07b",
+      "name": "Postgres - Insert Lead (optional)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -160,
+        -180
+      ],
+      "disabled": true,
+      "notesInFlow": true,
+      "notes": "Enable with Postgres credentials, or keep disabled and use Google Sheets."
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": "={{$env.LEADS_SHEET_ID || \"REPLACE_WITH_SHEET_ID\"}}",
+        "sheetName": "Leads",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "trace_id": "={{$json.lead.trace_id}}",
+            "created_at": "={{$json.lead.created_at}}",
+            "name": "={{$json.lead.name}}",
+            "email": "={{$json.lead.email}}",
+            "phone": "={{$json.lead.phone}}",
+            "source": "={{$json.lead.source}}",
+            "priority": "={{$json.lead.priority}}",
+            "score": "={{$json.lead.score}}",
+            "status": "={{$json.lead.status}}"
+          }
+        },
+        "options": {}
+      },
+      "id": "87139e42-f55a-454a-8d7f-215ef3e702d2",
+      "name": "Google Sheets - Append Lead (optional)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -160,
+        20
+      ],
+      "disabled": true,
+      "notesInFlow": true,
+      "notes": "Portfolio storage option. Configure Google Sheets credentials before enabling."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.WHATSAPP_API_URL || \"https://graph.facebook.com/v20.0/YOUR_PHONE_NUMBER_ID/messages\"}}",
+        "authentication": "none",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{\"Bearer \" + ($env.WHATSAPP_TOKEN || \"REPLACE_TOKEN\")}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "jsonBody": "={\"messaging_product\":\"whatsapp\",\"to\":\"{{$json.lead.phone}}\",\"type\":\"text\",\"text\":{\"body\":\"Hola {{$json.lead.name}}, recibimos tu consulta. Un asesor te contactara a la brevedad. Trace: {{$json.lead.trace_id}}\"}}",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "ddd53848-fd97-43a0-a194-8a52c47ad447",
+      "name": "HTTP Request - WhatsApp Follow-up",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        100,
+        -80
+      ],
+      "disabled": true,
+      "notesInFlow": true,
+      "notes": "Disabled by default to avoid sending real WhatsApp messages. Use variables/credentials."
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{$env.SMTP_FROM || \"portfolio@example.com\"}}",
+        "toEmail": "={{$env.SALES_TO_EMAIL || \"sales@example.com\"}}",
+        "subject": "=New {{$json.lead.priority}} lead - {{$json.lead.name}}",
+        "emailFormat": "html",
+        "html": "=<h2>New Lead</h2><p><b>Name:</b> {{$json.lead.name}}</p><p><b>Email:</b> {{$json.lead.email}}</p><p><b>Phone:</b> {{$json.lead.phone}}</p><p><b>Priority:</b> {{$json.lead.priority}} / {{$json.lead.score}}</p><p><b>Trace:</b> {{$json.lead.trace_id}}</p>",
+        "options": {}
+      },
+      "id": "f58c1080-cc6a-434a-b837-67c360ec3cbd",
+      "name": "Email Send - Internal Sales Alert",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        100,
+        120
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\"status\":\"accepted\",\"trace_id\":\"{{$json.lead.trace_id}}\",\"priority\":\"{{$json.lead.priority}}\",\"message\":\"Lead received and queued for follow-up\"}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "d2bf3815-e588-490b-a9d4-558b6a65ebe9",
+      "name": "Respond - Accepted",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        360,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\"status\":\"error\",\"message\":\"Invalid lead payload\",\"errors\":{{$json.errors}}}",
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "id": "7106d961-12df-484d-b6e9-a7ba77a5f24c",
+      "name": "Respond - Invalid Lead",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        -160,
+        240
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook - Lead Intake": {
+      "main": [
+        [
+          {
+            "node": "Validate + Normalize Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate + Normalize Lead": {
+      "main": [
+        [
+          {
+            "node": "IF - Lead Is Valid",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - Lead Is Valid": {
+      "main": [
+        [
+          {
+            "node": "Postgres - Insert Lead (optional)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Google Sheets - Append Lead (optional)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request - WhatsApp Follow-up",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Email Send - Internal Sales Alert",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Respond - Accepted",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond - Invalid Lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/Argentina/Cordoba"
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false
+  }
+}

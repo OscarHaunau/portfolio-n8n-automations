@@ -1,0 +1,314 @@
+{
+  "name": "Portfolio - Operational Incident Alerts + SLA Escalation",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 5
+            }
+          ]
+        }
+      },
+      "id": "dec7b751-e9b8-4ac8-9506-67088311861b",
+      "name": "Schedule - Every 5 Minutes",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -900,
+        -120
+      ],
+      "notesInFlow": true,
+      "notes": "For demo. Confirm instance timezone before using scheduled alerts."
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "portfolio/incident-event",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "1ceffe86-8f82-468e-a415-ae91ccfe622d",
+      "name": "Webhook - Incident Event",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -900,
+        140
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $json.body || {};\nconst now = new Date();\n// Supports both Webhook mode (body provided) and Schedule demo mode (no body).\nconst event = Object.keys(body).length ? body : {\n  source: 'scheduled-health-check',\n  service: 'demo-api',\n  status: 'degraded',\n  metric: 'response_time_ms',\n  value: 2450,\n  threshold: 2000,\n  message: 'Demo health check exceeded latency threshold'\n};\nconst severity = String(event.severity || '').toLowerCase() ||\n  (event.status === 'down' || event.value >= (event.threshold || 999999) * 1.5 ? 'critical' :\n   event.status === 'degraded' || event.value >= (event.threshold || 999999) ? 'warning' : 'info');\nconst priorityRank = { info: 1, warning: 2, critical: 3 }[severity] || 1;\nreturn [{ json: {\n  incident: {\n    incident_id: event.incident_id || `inc_${Date.now()}_${Math.random().toString(16).slice(2,8)}`,\n    source: event.source || 'unknown',\n    service: event.service || 'unknown-service',\n    status: event.status || 'unknown',\n    metric: event.metric || null,\n    value: event.value ?? null,\n    threshold: event.threshold ?? null,\n    severity,\n    priority_rank: priorityRank,\n    message: event.message || 'Operational event received',\n    created_at: now.toISOString(),\n    sla_minutes: severity === 'critical' ? 15 : severity === 'warning' ? 60 : 240,\n    escalation_required: priorityRank >= 2\n  }\n}}];"
+      },
+      "id": "d182f4cf-3d8c-4991-9149-f97a320e982f",
+      "name": "Normalize Incident Event",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -620,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "f13c3752-3c59-47a6-a969-f06e0548f8c6",
+                    "leftValue": "={{$json.incident.severity}}",
+                    "rightValue": "critical",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "critical"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "id": "a5b7990d-b390-4f08-be71-f1cca5f84024",
+                    "leftValue": "={{$json.incident.severity}}",
+                    "rightValue": "warning",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "warning"
+            }
+          ]
+        },
+        "fallbackOutput": "extra",
+        "options": {}
+      },
+      "id": "7dc3939d-08ba-4b01-99af-fa8827053cf9",
+      "name": "Switch - Severity",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -360,
+        20
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO portfolio_incidents (incident_id, source, service, status, severity, message, created_at, sla_minutes) VALUES ('{{$json.incident.incident_id}}', '{{$json.incident.source}}', '{{$json.incident.service}}', '{{$json.incident.status}}', '{{$json.incident.severity}}', '{{$json.incident.message}}', '{{$json.incident.created_at}}', {{$json.incident.sla_minutes}});",
+        "options": {}
+      },
+      "id": "950aaab4-7324-44ea-8ae1-f8c28c49e7ea",
+      "name": "Postgres - Log Incident (optional)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -110,
+        220
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.WHATSAPP_API_URL || \"https://graph.facebook.com/v20.0/YOUR_PHONE_NUMBER_ID/messages\"}}",
+        "authentication": "none",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{\"Bearer \" + ($env.WHATSAPP_TOKEN || \"REPLACE_TOKEN\")}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "jsonBody": "={\"messaging_product\":\"whatsapp\",\"to\":\"{{$env.OPS_WHATSAPP_TO || \"5490000000000\"}}\",\"type\":\"text\",\"text\":{\"body\":\"🚨 CRITICAL {{$json.incident.service}}: {{$json.incident.message}} | Incident {{$json.incident.incident_id}} | SLA {{$json.incident.sla_minutes}} min\"}}",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "48f4d1ef-7723-40dc-b593-f5e8f140a515",
+      "name": "HTTP Request - Critical WhatsApp Alert",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -80,
+        -160
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{$env.SMTP_FROM || \"portfolio@example.com\"}}",
+        "toEmail": "={{$env.OPS_TO_EMAIL || \"ops@example.com\"}}",
+        "subject": "=🚨 Critical incident - {{$json.incident.service}}",
+        "emailFormat": "html",
+        "html": "=<h2>Critical Incident</h2><p><b>ID:</b> {{$json.incident.incident_id}}</p><p><b>Service:</b> {{$json.incident.service}}</p><p><b>Message:</b> {{$json.incident.message}}</p><p><b>SLA:</b> {{$json.incident.sla_minutes}} minutes</p>",
+        "options": {}
+      },
+      "id": "b7b96b4e-65f5-4dd2-af87-84d3bc3e917a",
+      "name": "Email Send - Critical Incident",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        180,
+        -160
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{$env.SMTP_FROM || \"portfolio@example.com\"}}",
+        "toEmail": "={{$env.OPS_TO_EMAIL || \"ops@example.com\"}}",
+        "subject": "=⚠️ Warning - {{$json.incident.service}}",
+        "emailFormat": "html",
+        "html": "=<p><b>Warning:</b> {{$json.incident.message}}</p><p>ID: {{$json.incident.incident_id}}</p>",
+        "options": {}
+      },
+      "id": "47ed58ff-bcd9-4d0e-a171-b711e70f6e3d",
+      "name": "Email Send - Warning Alert",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        -80,
+        20
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\"status\":\"registered\",\"incident_id\":\"{{$json.incident.incident_id}}\",\"severity\":\"{{$json.incident.severity}}\",\"sla_minutes\":{{$json.incident.sla_minutes}}}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "34fd9511-de9d-4272-abff-a6dcf70e3deb",
+      "name": "Respond - Incident Registered",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        440,
+        80
+      ]
+    }
+  ],
+  "connections": {
+    "Schedule - Every 5 Minutes": {
+      "main": [
+        [
+          {
+            "node": "Normalize Incident Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook - Incident Event": {
+      "main": [
+        [
+          {
+            "node": "Normalize Incident Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Incident Event": {
+      "main": [
+        [
+          {
+            "node": "Switch - Severity",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Postgres - Log Incident (optional)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch - Severity": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request - Critical WhatsApp Alert",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Email Send - Critical Incident",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Respond - Incident Registered",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Email Send - Warning Alert",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Respond - Incident Registered",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond - Incident Registered",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/Argentina/Cordoba"
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false
+  }
+}

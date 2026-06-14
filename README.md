@@ -1,6 +1,5 @@
 # Portfolio n8n Automations — Oscar Haunau
 
-Two n8n portfolio prototypes for **Full Stack Automation Engineer / Tech Operations** roles.
 
 ## Projects
 

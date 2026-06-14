@@ -1,51 +1,69 @@
 # Portfolio n8n Automations — Oscar Haunau
 
-## n8n automation portfolio for marketing, sales and operations
+## Portfolio de automatizaciones n8n para marketing, ventas y operaciones
 
-These are two practical n8n automations built as portfolio projects for agencies and teams that need to reduce manual work, respond faster to leads, and keep internal operations under control.
+Estos son dos proyectos prácticos de automatización con n8n, pensados para agencias y equipos que necesitan reducir trabajo manual, responder más rápido a los leads y mantener control sobre procesos internos.
+
+**English:** Two practical n8n automation projects for agencies and teams that need to reduce manual work, respond faster to leads, and keep internal operations under control.
 
 <p align="center">
   <img src="assets/lead-intake-workflow.png" alt="Lead Intake WhatsApp CRM n8n workflow" width="48%" />
   <img src="assets/incident-alerts-workflow.png" alt="Operational Alerts n8n workflow" width="48%" />
 </p>
 
-## What these workflows do, in simple terms
+## Qué hacen estos workflows, en palabras simples
 
 ### 1. Lead Intake + WhatsApp + CRM
 
-This workflow receives potential customer inquiries automatically.
+Este workflow recibe consultas de potenciales clientes automáticamente.
 
-For example: someone fills out a form on a landing page. n8n receives the data, checks that it is valid, organizes the information, calculates if the lead is high priority, and prepares it for commercial follow-up.
+Por ejemplo: alguien completa un formulario en una landing page. n8n recibe los datos, valida que estén correctos, organiza la información, calcula si el lead es de alta prioridad y lo deja listo para seguimiento comercial.
 
-It can then:
+Puede:
 
-- Save the lead in Google Sheets or PostgreSQL.
-- Notify the sales team by email.
-- Send an automatic WhatsApp follow-up message.
+- Guardar el lead en Google Sheets o PostgreSQL.
+- Avisar al equipo comercial por email.
+- Enviar un mensaje automático de seguimiento por WhatsApp.
 
-**Presentation summary:**
+**Resumen:**
+
+> Automatización para recibir leads desde formularios, validar datos, guardarlos en un CRM o base de datos y disparar seguimiento automático por WhatsApp/email. Reduce tareas manuales y mejora la velocidad de respuesta comercial.
+
+**English:**
 
 > Automation for capturing leads from forms, validating data, registering them in a CRM or database, and triggering automatic WhatsApp/email follow-up. It reduces manual workload and improves commercial response speed.
 
 ### 2. Operational Alerts + Incident Escalation
 
-This workflow detects operational problems and alerts the right team quickly.
+Este workflow detecta problemas operativos y avisa rápido al equipo correspondiente.
 
-For example: if an API fails, a system is delayed, an external provider responds incorrectly, or an internal process is stuck, n8n receives the event, classifies it as warning or critical, and generates an alert.
+Por ejemplo: si una API falla, un sistema se demora, un proveedor externo responde mal o un proceso interno queda trabado, n8n recibe el evento, lo clasifica como warning o critical y genera una alerta.
 
-It can then:
+Puede:
 
-- Register the incident.
-- Notify the team by email or WhatsApp.
-- Define priority.
-- Assign an SLA response time.
-- Escalate critical issues.
+- Registrar el incidente.
+- Notificar al equipo por email o WhatsApp.
+- Definir prioridad.
+- Asignar un tiempo de respuesta/SLA.
+- Escalar problemas críticos.
 
-**Presentation summary:**
+**Resumen:**
+
+> Automatización para registrar eventos operativos, clasificar incidentes por severidad y disparar alertas por email/WhatsApp con lógica de SLA. Sirve para soporte técnico, back-office y monitoreo de servicios.
+
+**English:**
 
 > Automation for registering operational events, classifying incidents by severity, and triggering email/WhatsApp alerts with SLA logic. It is designed for technical support, back-office operations and service monitoring.
 
-## Why this matters for a marketing agency
+## Por qué esto aporta valor a una agencia de marketing
+
+- Respuesta más rápida a leads entrantes.
+- Menos carga manual entre formularios, planillas y CRMs.
+- Mejor trazabilidad de oportunidades comerciales.
+- Alertas claras cuando fallan procesos internos o proveedores.
+- Workflows n8n prácticos, adaptables a clientes reales.
+
+**English:**
 
 - Faster response to incoming leads.
 - Less manual copy-paste between forms, sheets and CRMs.

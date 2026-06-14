@@ -38,3 +38,45 @@ curl -X POST http://localhost:5678/webhook/portfolio/incident-event   -H "Conten
 - Demonstrates Tech Operations thinking: incident IDs, severity, SLA, traceability.
 - Uses separate routing for critical/warning/info.
 - Can integrate with provider health checks, backend logs, CRM status, payment webhooks or support queues.
+
+## Local test evidence
+
+Validated locally in n8n using the test webhook URL.
+
+### Critical incident
+
+```bash
+curl -X POST "http://localhost:5678/webhook-test/portfolio/incident-event" \
+  -H "Content-Type: application/json" \
+  -d @"/Users/oscarhaunau/Documents/Postulaciones/Moon/portfolio-n8n-automations/operational-alerts-incidents/sample-critical-event.json"
+```
+
+Expected response:
+
+```json
+{
+  "status": "registered",
+  "incident_id": "inc_...",
+  "severity": "critical",
+  "sla_minutes": 15
+}
+```
+
+### Warning incident
+
+```bash
+curl -X POST "http://localhost:5678/webhook-test/portfolio/incident-event" \
+  -H "Content-Type: application/json" \
+  -d @"/Users/oscarhaunau/Documents/Postulaciones/Moon/portfolio-n8n-automations/operational-alerts-incidents/sample-warning-event.json"
+```
+
+Expected response:
+
+```json
+{
+  "status": "registered",
+  "incident_id": "inc_...",
+  "severity": "warning",
+  "sla_minutes": 60
+}
+```

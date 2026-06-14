@@ -42,3 +42,44 @@ See `.env.example`. Do not hardcode real tokens in the workflow.
 - Uses trace IDs for operational visibility.
 - Avoids sending real messages until configured.
 - Can be extended into HubSpot/Pipedrive/Notion/Airtable CRM.
+
+## Local test evidence
+
+Validated locally in n8n using the test webhook URL.
+
+### Valid payload
+
+```bash
+curl -X POST "http://localhost:5678/webhook-test/portfolio/lead-intake" \
+  -H "Content-Type: application/json" \
+  -d @"/Users/oscarhaunau/Documents/Postulaciones/Moon/portfolio-n8n-automations/lead-intake-whatsapp-crm/sample-payload.json"
+```
+
+Expected response:
+
+```json
+{
+  "status": "accepted",
+  "trace_id": "lead_...",
+  "priority": "hot",
+  "message": "Lead received and queued for follow-up"
+}
+```
+
+### Invalid payload
+
+```bash
+curl -X POST "http://localhost:5678/webhook-test/portfolio/lead-intake" \
+  -H "Content-Type: application/json" \
+  -d @"/Users/oscarhaunau/Documents/Postulaciones/Moon/portfolio-n8n-automations/lead-intake-whatsapp-crm/sample-invalid-payload.json"
+```
+
+Expected response:
+
+```json
+{
+  "status": "error",
+  "message": "Invalid lead payload",
+  "errors": ["Missing name", "Invalid email", "Invalid phone"]
+}
+```

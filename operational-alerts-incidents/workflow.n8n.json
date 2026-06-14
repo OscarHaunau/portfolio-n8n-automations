@@ -208,7 +208,7 @@
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={\"status\":\"registered\",\"incident_id\":\"{{$json.incident.incident_id}}\",\"severity\":\"{{$json.incident.severity}}\",\"sla_minutes\":{{$json.incident.sla_minutes}}}",
+        "responseBody": "={{ { \"status\": \"registered\", \"incident_id\": $json.incident.incident_id, \"severity\": $json.incident.severity, \"sla_minutes\": $json.incident.sla_minutes } }}",
         "options": {
           "responseCode": 200
         }

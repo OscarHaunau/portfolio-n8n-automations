@@ -175,7 +175,7 @@
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={\"status\":\"accepted\",\"trace_id\":\"{{$json.lead.trace_id}}\",\"priority\":\"{{$json.lead.priority}}\",\"message\":\"Lead received and queued for follow-up\"}",
+        "responseBody": "={{ { \"status\": \"accepted\", \"trace_id\": $json.lead.trace_id, \"priority\": $json.lead.priority, \"message\": \"Lead received and queued for follow-up\" } }}",
         "options": {
           "responseCode": 200
         }
@@ -192,7 +192,7 @@
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={\"status\":\"error\",\"message\":\"Invalid lead payload\",\"errors\":{{$json.errors}}}",
+        "responseBody": "={{ { \"status\": \"error\", \"message\": \"Invalid lead payload\", \"errors\": $json.errors } }}",
         "options": {
           "responseCode": 400
         }

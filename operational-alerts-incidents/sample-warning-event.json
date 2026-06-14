@@ -3,7 +3,7 @@
   "service": "crm-sync",
   "status": "degraded",
   "metric": "lag_minutes",
-  "value": 45,
+  "value": 35,
   "threshold": 30,
-  "message": "CRM sync is delayed beyond expected SLA."
+  "message": "CRM sync is delayed beyond expected SLA but below critical threshold."
 }

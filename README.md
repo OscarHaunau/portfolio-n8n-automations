@@ -18,6 +18,20 @@
 
 Estos son dos proyectos prácticos de automatización con n8n, pensados para agencias y equipos que necesitan reducir trabajo manual, responder más rápido a los leads y mantener control sobre procesos internos.
 
+## Por qué estos proyectos aplican a empresas reales
+
+Estos dos workflows están pensados para problemas comunes en empresas comerciales y operativas: recibir consultas, ordenar datos, responder rápido, registrar seguimiento y alertar cuando algo falla. Por eso pueden adaptarse fácilmente a clientes de distintos rubros:
+
+| Tipo de empresa | Cómo ayuda **Lead Intake + WhatsApp + CRM** | Cómo ayuda **Operational Alerts + Incident Escalation** |
+|---|---|---|
+| **Distribuidora** | Captura pedidos o consultas de comercios, clasifica prioridad y avisa al equipo comercial. | Alerta demoras de logística, faltantes de stock o errores en sistemas de pedidos. |
+| **Concesionaria** | Registra interesados en autos, test drives o financiación y dispara seguimiento inmediato. | Notifica problemas con formularios, integraciones de crédito o demoras en respuesta comercial. |
+| **Vinoteca** | Recibe consultas por productos, eventos, regalos corporativos o ventas mayoristas. | Avisa incidencias de stock, pedidos demorados o fallas en canales de venta online. |
+| **Hotel** | Captura reservas, consultas de disponibilidad y pedidos especiales desde formularios o campañas. | Escala problemas de reservas, pagos, check-in o proveedores externos. |
+| **Aseguradora** | Ordena solicitudes de cotización, reclamos o renovaciones y genera trazabilidad del contacto. | Alerta casos urgentes, vencimientos, errores de carga o demoras en procesos internos. |
+
+**Idea central:** no son demos aisladas; son bases reutilizables para automatizar procesos comerciales y de back-office en clientes reales.
+
 ## Qué hacen estos workflows, en palabras simples
 
 ### 1. Lead Intake + WhatsApp + CRM
@@ -298,6 +312,20 @@ Capturas adicionales del flujo de incidentes probado con alertas reales por emai
 ## n8n automation portfolio for marketing, sales and operations
 
 These are two practical n8n automation projects for agencies and teams that need to reduce manual work, respond faster to leads, and keep internal operations under control.
+
+## Why these projects apply to real companies
+
+These two workflows target common commercial and operational problems: receiving inquiries, organizing data, responding quickly, tracking follow-up, and alerting teams when something fails. That makes them easy to adapt to clients across different industries:
+
+| Business type | How **Lead Intake + WhatsApp + CRM** helps | How **Operational Alerts + Incident Escalation** helps |
+|---|---|---|
+| **Distributor** | Captures orders or store inquiries, scores priority, and notifies the sales team. | Alerts logistics delays, stock issues, or order-system errors. |
+| **Car dealership** | Registers people interested in cars, test drives, or financing and triggers immediate follow-up. | Notifies form failures, credit integration issues, or commercial response delays. |
+| **Wine shop** | Receives product, event, corporate gift, or wholesale sales inquiries. | Alerts stock incidents, delayed orders, or online sales channel failures. |
+| **Hotel** | Captures reservations, availability questions, and special requests from forms or campaigns. | Escalates reservation, payment, check-in, or external provider issues. |
+| **Insurance company** | Organizes quote requests, claims, or renewals and keeps contact traceability. | Alerts urgent cases, expirations, data-entry errors, or internal process delays. |
+
+**Core idea:** these are not isolated demos; they are reusable foundations for automating commercial and back-office processes for real clients.
 
 ## What these workflows do, in simple terms
 

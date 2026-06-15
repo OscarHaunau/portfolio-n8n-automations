@@ -55,7 +55,7 @@ Puede:
 
 > Automation for registering operational events, classifying incidents by severity, and triggering email/WhatsApp alerts with SLA logic. It is designed for technical support, back-office operations and service monitoring.
 
-## Por qué esto aporta valor a una agencia de marketing
+## Por qué esto aporta valor?
 
 - Respuesta más rápida a leads entrantes.
 - Menos carga manual entre formularios, planillas y CRMs.

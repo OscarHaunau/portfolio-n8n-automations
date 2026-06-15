@@ -170,6 +170,15 @@ Respuesta esperada:
 }
 ```
 
+
+### Integración real con Google Sheets
+
+También se probó la integración real con Google Sheets usando autenticación por **Service Account**. El workflow guarda automáticamente el lead validado en una planilla real.
+
+<p align="center">
+  <img src="assets/google-sheets-real-test.png" alt="Google Sheets real integration test" width="90%" />
+</p>
+
 > Nota: los nodos externos de WhatsApp, email, Google Sheets y PostgreSQL están desactivados por defecto para evitar envíos reales o escrituras reales sin credenciales.
 
 ---
@@ -331,5 +340,14 @@ Expected response:
   "sla_minutes": 60
 }
 ```
+
+
+### Real Google Sheets integration
+
+The Google Sheets integration was also tested with a real spreadsheet using **Service Account** authentication. The workflow automatically stores the validated lead in a real sheet.
+
+<p align="center">
+  <img src="assets/google-sheets-real-test.png" alt="Google Sheets real integration test" width="90%" />
+</p>
 
 > Note: The external action nodes for WhatsApp, email, Google Sheets and PostgreSQL are disabled by default to avoid sending real messages or writing to real services without credentials.

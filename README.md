@@ -1,6 +1,6 @@
 # Portfolio n8n Automations — Oscar Haunau
 
-## Portfolio de automatizaciones n8n para marketing, ventas y operaciones
+## Automatizaciones n8n para marketing, ventas y operaciones
 
 Estos son dos proyectos prácticos de automatización con n8n, pensados para agencias y equipos que necesitan reducir trabajo manual, responder más rápido a los leads y mantener control sobre procesos internos.
 

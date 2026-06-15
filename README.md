@@ -1,15 +1,22 @@
 # Portfolio n8n Automations — Oscar Haunau
 
-## Automatizaciones n8n para marketing, ventas y operaciones
-
-Estos son dos proyectos prácticos de automatización con n8n, pensados para agencias y equipos que necesitan reducir trabajo manual, responder más rápido a los leads y mantener control sobre procesos internos.
-
-**English:** Two practical n8n automation projects for agencies and teams that need to reduce manual work, respond faster to leads, and keep internal operations under control.
-
 <p align="center">
   <img src="assets/lead-intake-workflow.png" alt="Lead Intake WhatsApp CRM n8n workflow" width="48%" />
   <img src="assets/incident-alerts-workflow.png" alt="Operational Alerts n8n workflow" width="48%" />
 </p>
+
+<p align="center">
+  <a href="#español"><strong>🇪🇸 Español</strong></a> ·
+  <a href="#english"><strong>🇺🇸 English</strong></a>
+</p>
+
+---
+
+## Español
+
+## Automatizaciones n8n para marketing, ventas y operaciones
+
+Estos son dos proyectos prácticos de automatización con n8n, pensados para agencias y equipos que necesitan reducir trabajo manual, responder más rápido a los leads y mantener control sobre procesos internos.
 
 ## Qué hacen estos workflows, en palabras simples
 
@@ -29,10 +36,6 @@ Puede:
 
 > Automatización para recibir leads desde formularios, validar datos, guardarlos en un CRM o base de datos y disparar seguimiento automático por WhatsApp/email. Reduce tareas manuales y mejora la velocidad de respuesta comercial.
 
-**English:**
-
-> Automation for capturing leads from forms, validating data, registering them in a CRM or database, and triggering automatic WhatsApp/email follow-up. It reduces manual workload and improves commercial response speed.
-
 ### 2. Operational Alerts + Incident Escalation
 
 Este workflow detecta problemas operativos y avisa rápido al equipo correspondiente.
@@ -51,10 +54,6 @@ Puede:
 
 > Automatización para registrar eventos operativos, clasificar incidentes por severidad y disparar alertas por email/WhatsApp con lógica de SLA. Sirve para soporte técnico, back-office y monitoreo de servicios.
 
-**English:**
-
-> Automation for registering operational events, classifying incidents by severity, and triggering email/WhatsApp alerts with SLA logic. It is designed for technical support, back-office operations and service monitoring.
-
 ## Por qué esto aporta valor?
 
 - Respuesta más rápida a leads entrantes.
@@ -63,7 +62,161 @@ Puede:
 - Alertas claras cuando fallan procesos internos o proveedores.
 - Workflows n8n prácticos, adaptables a clientes reales.
 
-**English:**
+## Proyectos
+
+1. **Lead Intake + WhatsApp + CRM**
+   - Captura leads vía Webhook.
+   - Valida y normaliza datos de contacto.
+   - Calcula prioridad del lead.
+   - Guarda el registro en Google Sheets o PostgreSQL.
+   - Dispara seguimiento por WhatsApp y notificación interna por email.
+
+2. **Operational Alerts + Incident Escalation**
+   - Recibe eventos por Webhook o ejecuta una demo con Schedule Trigger.
+   - Normaliza datos del evento y clasifica severidad.
+   - Registra incidentes.
+   - Envía alertas por WhatsApp/email y soporta lógica de escalamiento por SLA.
+
+## Posicionamiento de portfolio
+
+Estos workflows demuestran habilidades prácticas de automatización: Webhooks, rutas condicionales, normalización de datos, llamadas API, persistencia tipo CRM, notificaciones por WhatsApp/email, logs, criterios de SLA y uso seguro de variables de entorno.
+
+## Cómo importar
+
+En n8n: **Workflows → Import from File** y seleccionar cada archivo `workflow.n8n.json`.
+
+Los nodos de acciones externas están desactivados por defecto para evitar mensajes reales o escrituras en servicios reales. Configurá credenciales/variables de entorno antes de habilitarlos.
+
+## Probado localmente
+
+Ambos workflows fueron importados y probados en una instancia local de n8n corriendo en `http://localhost:5678`.
+
+### Lead Intake + WhatsApp + CRM
+
+Prueba de lead válido:
+
+```bash
+curl -X POST "http://localhost:5678/webhook-test/portfolio/lead-intake" \
+  -H "Content-Type: application/json" \
+  -d @"/Users/oscarhaunau/Documents/Postulaciones/Moon/portfolio-n8n-automations/lead-intake-whatsapp-crm/sample-payload.json"
+```
+
+Respuesta esperada:
+
+```json
+{
+  "status": "accepted",
+  "trace_id": "lead_...",
+  "priority": "hot",
+  "message": "Lead received and queued for follow-up"
+}
+```
+
+Prueba de lead inválido:
+
+```bash
+curl -X POST "http://localhost:5678/webhook-test/portfolio/lead-intake" \
+  -H "Content-Type: application/json" \
+  -d @"/Users/oscarhaunau/Documents/Postulaciones/Moon/portfolio-n8n-automations/lead-intake-whatsapp-crm/sample-invalid-payload.json"
+```
+
+Respuesta esperada:
+
+```json
+{
+  "status": "error",
+  "message": "Invalid lead payload",
+  "errors": ["Missing name", "Invalid email", "Invalid phone"]
+}
+```
+
+### Operational Alerts + Incident Escalation
+
+Prueba de incidente crítico:
+
+```bash
+curl -X POST "http://localhost:5678/webhook-test/portfolio/incident-event" \
+  -H "Content-Type: application/json" \
+  -d @"/Users/oscarhaunau/Documents/Postulaciones/Moon/portfolio-n8n-automations/operational-alerts-incidents/sample-critical-event.json"
+```
+
+Respuesta esperada:
+
+```json
+{
+  "status": "registered",
+  "incident_id": "inc_...",
+  "severity": "critical",
+  "sla_minutes": 15
+}
+```
+
+Prueba de incidente warning:
+
+```bash
+curl -X POST "http://localhost:5678/webhook-test/portfolio/incident-event" \
+  -H "Content-Type: application/json" \
+  -d @"/Users/oscarhaunau/Documents/Postulaciones/Moon/portfolio-n8n-automations/operational-alerts-incidents/sample-warning-event.json"
+```
+
+Respuesta esperada:
+
+```json
+{
+  "status": "registered",
+  "incident_id": "inc_...",
+  "severity": "warning",
+  "sla_minutes": 60
+}
+```
+
+> Nota: los nodos externos de WhatsApp, email, Google Sheets y PostgreSQL están desactivados por defecto para evitar envíos reales o escrituras reales sin credenciales.
+
+---
+
+## English
+
+## n8n automation portfolio for marketing, sales and operations
+
+These are two practical n8n automation projects for agencies and teams that need to reduce manual work, respond faster to leads, and keep internal operations under control.
+
+## What these workflows do, in simple terms
+
+### 1. Lead Intake + WhatsApp + CRM
+
+This workflow receives potential customer inquiries automatically.
+
+For example: someone fills out a form on a landing page. n8n receives the data, checks that it is valid, organizes the information, calculates if the lead is high priority, and prepares it for commercial follow-up.
+
+It can:
+
+- Save the lead in Google Sheets or PostgreSQL.
+- Notify the sales team by email.
+- Send an automatic WhatsApp follow-up message.
+
+**Summary:**
+
+> Automation for capturing leads from forms, validating data, registering them in a CRM or database, and triggering automatic WhatsApp/email follow-up. It reduces manual workload and improves commercial response speed.
+
+### 2. Operational Alerts + Incident Escalation
+
+This workflow detects operational problems and alerts the right team quickly.
+
+For example: if an API fails, a system is delayed, an external provider responds incorrectly, or an internal process is stuck, n8n receives the event, classifies it as warning or critical, and generates an alert.
+
+It can:
+
+- Register the incident.
+- Notify the team by email or WhatsApp.
+- Define priority.
+- Assign an SLA response time.
+- Escalate critical issues.
+
+**Summary:**
+
+> Automation for registering operational events, classifying incidents by severity, and triggering email/WhatsApp alerts with SLA logic. It is designed for technical support, back-office operations and service monitoring.
+
+## Why this adds value?
 
 - Faster response to incoming leads.
 - Less manual copy-paste between forms, sheets and CRMs.

@@ -223,6 +223,26 @@ También se probaron las alertas del workflow de incidentes usando **Gmail SMTP*
   <img src="assets/incident-warning-email-test.png" alt="Warning incident email alert" width="70%" />
 </p>
 
+### Evidencia adicional de alertas operativas
+
+Capturas adicionales del flujo de incidentes probado con alertas reales por email para eventos `critical` y `warning`.
+
+<p align="center">
+  <img src="assets/additional-evidence-01.png" alt="Additional critical incident workflow evidence" width="90%" />
+</p>
+
+<p align="center">
+  <img src="assets/additional-evidence-02.png" alt="Additional critical incident email evidence" width="70%" />
+</p>
+
+<p align="center">
+  <img src="assets/additional-evidence-03.png" alt="Additional warning incident workflow evidence" width="90%" />
+</p>
+
+<p align="center">
+  <img src="assets/additional-evidence-04.png" alt="Additional warning incident email evidence" width="70%" />
+</p>
+
 > Nota: los nodos externos de WhatsApp, email, Google Sheets y PostgreSQL están desactivados por defecto para evitar envíos reales o escrituras reales sin credenciales.
 
 ---
@@ -436,6 +456,26 @@ The incident workflow alerts were also tested using **Gmail SMTP** for both `cri
 
 <p align="center">
   <img src="assets/incident-warning-email-test.png" alt="Warning incident email alert" width="70%" />
+</p>
+
+### Additional operational alert evidence
+
+Additional screenshots from the incident workflow tested with real email alerts for `critical` and `warning` events.
+
+<p align="center">
+  <img src="assets/additional-evidence-01.png" alt="Additional critical incident workflow evidence" width="90%" />
+</p>
+
+<p align="center">
+  <img src="assets/additional-evidence-02.png" alt="Additional critical incident email evidence" width="70%" />
+</p>
+
+<p align="center">
+  <img src="assets/additional-evidence-03.png" alt="Additional warning incident workflow evidence" width="90%" />
+</p>
+
+<p align="center">
+  <img src="assets/additional-evidence-04.png" alt="Additional warning incident email evidence" width="70%" />
 </p>
 
 > Note: The external action nodes for WhatsApp, email, Google Sheets and PostgreSQL are disabled by default to avoid sending real messages or writing to real services without credentials.

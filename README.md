@@ -179,6 +179,14 @@ También se probó la integración real con Google Sheets usando autenticación 
   <img src="assets/google-sheets-real-test.png" alt="Google Sheets real integration test" width="90%" />
 </p>
 
+### Envío real de email con Gmail SMTP
+
+También se probó el envío real de email usando **Gmail SMTP** con contraseña de aplicación. Después de recibir y validar el lead, el workflow envía una notificación comercial por email con los datos principales del contacto.
+
+<p align="center">
+  <img src="assets/gmail-smtp-real-test.png" alt="Gmail SMTP real email test" width="70%" />
+</p>
+
 > Nota: los nodos externos de WhatsApp, email, Google Sheets y PostgreSQL están desactivados por defecto para evitar envíos reales o escrituras reales sin credenciales.
 
 ---
@@ -348,6 +356,14 @@ The Google Sheets integration was also tested with a real spreadsheet using **Se
 
 <p align="center">
   <img src="assets/google-sheets-real-test.png" alt="Google Sheets real integration test" width="90%" />
+</p>
+
+### Real email delivery with Gmail SMTP
+
+Real email delivery was also tested using **Gmail SMTP** with an app password. After receiving and validating the lead, the workflow sends a commercial notification email with the main contact details.
+
+<p align="center">
+  <img src="assets/gmail-smtp-real-test.png" alt="Gmail SMTP real email test" width="70%" />
 </p>
 
 > Note: The external action nodes for WhatsApp, email, Google Sheets and PostgreSQL are disabled by default to avoid sending real messages or writing to real services without credentials.
